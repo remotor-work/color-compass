@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Color Compass</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Color Compass</p>
+        <h1>Цветовой круг и схемы подбора для художников и дизайнеров</h1>
+        <p class="hero-text">
+          Выберите базовый цвет, настройте насыщенность и светлоту, а затем переключайтесь
+          между схемами: монохромной, комплементарной, аналоговой, триадой, тетрадой и квадратом.
+        </p>
+      </div>
+      <div class="hero-card">
+        <div class="card-label">Текущий цвет</div>
+        <div class="hero-swatch" id="heroSwatch"></div>
+        <div class="hero-values">
+          <span id="heroHex">#000000</span>
+          <span id="heroHsl">HSL(0, 0%, 0%)</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <section class="panel controls-panel">
+        <div class="section-heading">
+          <p class="eyebrow">Настройка</p>
+          <h2>Исходный цвет</h2>
+        </div>
+
+        <label class="field">
+          <span>HEX</span>
+          <div class="input-row">
+            <input id="hexInput" type="text" value="#ff6b6b" maxlength="7" spellcheck="false">
+            <input id="nativeColorInput" type="color" value="#ff6b6b" aria-label="Выберите цвет">
+          </div>
+        </label>
+
+        <label class="field">
+          <span>Оттенок</span>
+          <input id="hueSlider" type="range" min="0" max="360" value="0">
+          <strong id="hueValue">0°</strong>
+        </label>
+
+        <label class="field">
+          <span>Насыщенность</span>
+          <input id="saturationSlider" type="range" min="0" max="100" value="80">
+          <strong id="saturationValue">80%</strong>
+        </label>
+
+        <label class="field">
+          <span>Светлота</span>
+          <input id="lightnessSlider" type="range" min="0" max="100" value="67">
+          <strong id="lightnessValue">67%</strong>
+        </label>
+
+        <label class="field">
+          <span>Метод подбора</span>
+          <select id="schemeSelect"></select>
+        </label>
+
+        <div class="scheme-note">
+          <h3 id="schemeTitle">Монохромная схема</h3>
+          <p id="schemeDescription"></p>
+        </div>
+      </section>
+
+      <section class="panel visualization-panel">
+        <div class="section-heading">
+          <p class="eyebrow">Визуализация</p>
+          <h2>Цветовой круг</h2>
+        </div>
+
+        <div class="wheel-area">
+          <div class="color-wheel" id="colorWheel">
+            <div class="wheel-center"></div>
+          </div>
+          <div class="wheel-legend">
+            <div class="legend-item"><span class="legend-dot base-dot"></span> Базовый цвет</div>
+            <div class="legend-item"><span class="legend-dot pair-dot"></span> Цвета схемы</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel palette-panel">
+        <div class="section-heading">
+          <p class="eyebrow">Результат</p>
+          <h2>Подобранная палитра</h2>
+        </div>
+
+        <div class="palette-grid" id="paletteGrid"></div>
+      </section>
+    </main>
+  </div>
+
+  <template id="paletteCardTemplate">
+    <article class="palette-card">
+      <div class="palette-swatch"></div>
+      <div class="palette-meta">
+        <h3></h3>
+        <p class="palette-hex"></p>
+        <p class="palette-hsl"></p>
+      </div>
+      <button type="button" class="copy-button">Скопировать</button>
+    </article>
+  </template>
+
+  <script src="script.js"></script>
+</body>
+</html>
