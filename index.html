@@ -86,6 +86,14 @@
       </div>
       <div class="palette-grid" id="paletteGrid"></div>
     </section>
+
+    <section class="theory-panel panel">
+      <div class="palette-head">
+        <span class="micro-label">Theory</span>
+        <span class="micro-label">scheme examples</span>
+      </div>
+      <div class="theory-grid" id="theoryGrid"></div>
+    </section>
   </main>
 
   <template id="paletteCardTemplate">
@@ -98,6 +106,21 @@
         <h2></h2>
         <p class="palette-hex"></p>
         <p class="palette-hsl"></p>
+      </div>
+    </article>
+  </template>
+
+  <template id="theoryCardTemplate">
+    <article class="theory-card">
+      <div class="theory-card-head">
+        <h2></h2>
+        <p class="theory-copy"></p>
+      </div>
+      <div class="theory-preview">
+        <div class="theory-wheel">
+          <div class="theory-wheel-core"></div>
+        </div>
+        <div class="theory-swatches"></div>
       </div>
     </article>
   </template>

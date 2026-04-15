@@ -2,6 +2,7 @@ const schemeDefinitions = {
   monochromatic: {
     label: "Mono",
     description: "single hue",
+    theory: "Один оттенок, но разная светлота и насыщенность.",
     build(base) {
       return [
         { h: base.h, s: clamp(base.s - 30, 8, 100), l: 16, label: "Shadow" },
@@ -15,6 +16,7 @@ const schemeDefinitions = {
   analogous: {
     label: "Analog",
     description: "side hues",
+    theory: "Соседние цвета на круге дают мягкий переход.",
     build(base) {
       return [
         { h: normalizeHue(base.h - 34), s: clamp(base.s + 4, 8, 100), l: clamp(base.l - 6, 8, 92), label: "Left" },
@@ -28,6 +30,7 @@ const schemeDefinitions = {
   complementary: {
     label: "Comp",
     description: "direct contrast",
+    theory: "Пара противоположных цветов для самого сильного контраста.",
     build(base) {
       return [
         { h: base.h, s: clamp(base.s - 28, 8, 100), l: 18, label: "Base dark" },
@@ -40,6 +43,7 @@ const schemeDefinitions = {
   splitComplementary: {
     label: "Split",
     description: "soft contrast",
+    theory: "Контраст через два соседних к дополнению оттенка.",
     build(base) {
       return [
         { h: base.h, s: base.s, l: base.l, label: "Base" },
@@ -52,6 +56,7 @@ const schemeDefinitions = {
   triadic: {
     label: "Triad",
     description: "3 corners",
+    theory: "Три точки через равные интервалы по кругу.",
     build(base) {
       return [
         { h: base.h, s: base.s, l: base.l, label: "Base" },
@@ -64,6 +69,7 @@ const schemeDefinitions = {
   square: {
     label: "Square",
     description: "4 equal",
+    theory: "Четыре равноудалённых оттенка с яркой динамикой.",
     build(base) {
       return [0, 90, 180, 270].map((offset, index) => ({
         h: normalizeHue(base.h + offset),
@@ -76,6 +82,7 @@ const schemeDefinitions = {
   tetradic: {
     label: "Tetra",
     description: "2 pairs",
+    theory: "Две комплементарные пары для сложной палитры.",
     build(base) {
       return [
         { h: base.h, s: base.s, l: base.l, label: "Base" },
@@ -106,7 +113,9 @@ const elements = {
   toneBar: document.getElementById("toneBar"),
   toneThumb: document.getElementById("toneThumb"),
   paletteGrid: document.getElementById("paletteGrid"),
-  paletteCardTemplate: document.getElementById("paletteCardTemplate")
+  paletteCardTemplate: document.getElementById("paletteCardTemplate"),
+  theoryGrid: document.getElementById("theoryGrid"),
+  theoryCardTemplate: document.getElementById("theoryCardTemplate")
 };
 
 const state = {
@@ -278,6 +287,7 @@ function render() {
   renderWheel(palette);
   renderToneBar();
   renderPalette(palette);
+  renderTheory();
 }
 
 function renderSchemeButtons() {
@@ -359,6 +369,45 @@ function renderPalette(palette) {
     });
 
     elements.paletteGrid.append(fragment);
+  });
+}
+
+function renderTheory() {
+  const demoBase = { h: 18, s: 78, l: 56 };
+  elements.theoryGrid.innerHTML = "";
+
+  Object.values(schemeDefinitions).forEach((scheme) => {
+    const palette = scheme.build(demoBase);
+    const fragment = elements.theoryCardTemplate.content.cloneNode(true);
+    const title = fragment.querySelector("h2");
+    const copy = fragment.querySelector(".theory-copy");
+    const wheel = fragment.querySelector(".theory-wheel");
+    const swatches = fragment.querySelector(".theory-swatches");
+
+    title.textContent = scheme.label;
+    copy.textContent = scheme.theory;
+
+    palette.forEach((color) => {
+      const dot = document.createElement("div");
+      dot.className = "theory-dot";
+      dot.style.background = hslToHex(color.h, color.s, color.l);
+
+      const hueRad = (color.h * Math.PI) / 180;
+      const radius = 39;
+      const ratio = clamp(color.s / 100, 0.2, 1) * 0.84;
+      const x = radius + Math.cos(hueRad) * radius * ratio;
+      const y = radius + Math.sin(hueRad) * radius * ratio;
+      dot.style.left = `${x}px`;
+      dot.style.top = `${y}px`;
+      wheel.append(dot);
+
+      const swatch = document.createElement("div");
+      swatch.className = "theory-swatch";
+      swatch.style.background = hslToHex(color.h, color.s, color.l);
+      swatches.append(swatch);
+    });
+
+    elements.theoryGrid.append(fragment);
   });
 }
 
