@@ -3,13 +3,9 @@ const schemeDefinitions = {
     label: "Mono",
     description: "single hue",
     theory: "Один оттенок, но разная светлота и насыщенность.",
-    build(base) {
+    colors(base) {
       return [
-        { h: base.h, s: clamp(base.s - 30, 8, 100), l: 16, label: "Shadow" },
-        { h: base.h, s: clamp(base.s - 12, 8, 100), l: 32, label: "Low" },
-        { h: base.h, s: base.s, l: base.l, label: "Base" },
-        { h: base.h, s: clamp(base.s - 12, 8, 100), l: 70, label: "High" },
-        { h: base.h, s: clamp(base.s - 28, 8, 100), l: 88, label: "Glow" }
+        { h: base.h, s: base.s, l: base.l, label: "Mono" }
       ];
     }
   },
@@ -17,13 +13,11 @@ const schemeDefinitions = {
     label: "Analog",
     description: "side hues",
     theory: "Соседние цвета на круге дают мягкий переход.",
-    build(base) {
+    colors(base) {
       return [
-        { h: normalizeHue(base.h - 34), s: clamp(base.s + 4, 8, 100), l: clamp(base.l - 6, 8, 92), label: "Left" },
-        { h: normalizeHue(base.h - 16), s: base.s, l: clamp(base.l + 4, 8, 92), label: "Near L" },
         { h: base.h, s: base.s, l: base.l, label: "Base" },
-        { h: normalizeHue(base.h + 16), s: base.s, l: clamp(base.l + 4, 8, 92), label: "Near R" },
-        { h: normalizeHue(base.h + 34), s: clamp(base.s + 4, 8, 100), l: clamp(base.l - 6, 8, 92), label: "Right" }
+        { h: normalizeHue(base.h - 26), s: clamp(base.s + 4, 8, 100), l: clamp(base.l + 2, 8, 92), label: "Left" },
+        { h: normalizeHue(base.h + 26), s: clamp(base.s + 4, 8, 100), l: clamp(base.l + 2, 8, 92), label: "Right" }
       ];
     }
   },
@@ -31,12 +25,10 @@ const schemeDefinitions = {
     label: "Comp",
     description: "direct contrast",
     theory: "Пара противоположных цветов для самого сильного контраста.",
-    build(base) {
+    colors(base) {
       return [
-        { h: base.h, s: clamp(base.s - 28, 8, 100), l: 18, label: "Base dark" },
         { h: base.h, s: base.s, l: base.l, label: "Base" },
-        { h: normalizeHue(base.h + 180), s: base.s, l: base.l, label: "Oppose" },
-        { h: normalizeHue(base.h + 180), s: clamp(base.s - 22, 8, 100), l: 82, label: "Oppose light" }
+        { h: normalizeHue(base.h + 180), s: base.s, l: base.l, label: "Oppose" }
       ];
     }
   },
@@ -44,12 +36,10 @@ const schemeDefinitions = {
     label: "Split",
     description: "soft contrast",
     theory: "Контраст через два соседних к дополнению оттенка.",
-    build(base) {
+    colors(base) {
       return [
-        { h: base.h, s: base.s, l: base.l, label: "Base" },
         { h: normalizeHue(base.h + 150), s: base.s, l: clamp(base.l - 4, 8, 92), label: "Split L" },
-        { h: normalizeHue(base.h + 210), s: base.s, l: clamp(base.l + 10, 8, 92), label: "Split R" },
-        { h: base.h, s: clamp(base.s - 24, 8, 100), l: 18, label: "Anchor" }
+        { h: normalizeHue(base.h + 210), s: base.s, l: clamp(base.l + 10, 8, 92), label: "Split R" }
       ];
     }
   },
@@ -57,12 +47,11 @@ const schemeDefinitions = {
     label: "Triad",
     description: "3 corners",
     theory: "Три точки через равные интервалы по кругу.",
-    build(base) {
+    colors(base) {
       return [
         { h: base.h, s: base.s, l: base.l, label: "Base" },
         { h: normalizeHue(base.h + 120), s: clamp(base.s - 6, 8, 100), l: clamp(base.l + 4, 8, 92), label: "T2" },
-        { h: normalizeHue(base.h + 240), s: clamp(base.s - 6, 8, 100), l: clamp(base.l + 4, 8, 92), label: "T3" },
-        { h: base.h, s: clamp(base.s - 36, 8, 100), l: 86, label: "Mist" }
+        { h: normalizeHue(base.h + 240), s: clamp(base.s - 6, 8, 100), l: clamp(base.l + 4, 8, 92), label: "T3" }
       ];
     }
   },
@@ -70,7 +59,7 @@ const schemeDefinitions = {
     label: "Square",
     description: "4 equal",
     theory: "Четыре равноудалённых оттенка с яркой динамикой.",
-    build(base) {
+    colors(base) {
       return [0, 90, 180, 270].map((offset, index) => ({
         h: normalizeHue(base.h + offset),
         s: index === 0 ? base.s : clamp(base.s - 8, 8, 100),
@@ -83,7 +72,7 @@ const schemeDefinitions = {
     label: "Tetra",
     description: "2 pairs",
     theory: "Две комплементарные пары для сложной палитры.",
-    build(base) {
+    colors(base) {
       return [
         { h: base.h, s: base.s, l: base.l, label: "Base" },
         { h: normalizeHue(base.h + 60), s: clamp(base.s - 8, 8, 100), l: 76, label: "Pair A" },
@@ -132,7 +121,6 @@ initialize();
 
 function initialize() {
   buildSchemeButtons();
-  buildWheelControls();
   bindEvents();
   syncStateFromHex("#ff6b6b");
   render();
@@ -151,14 +139,6 @@ function buildSchemeButtons() {
     });
     elements.schemeStrip.append(button);
   });
-}
-
-function buildWheelControls() {
-  wheelMarkerHalo = document.createElement("div");
-  wheelMarkerHalo.className = "wheel-marker-halo";
-  wheelMarker = document.createElement("div");
-  wheelMarker.className = "wheel-marker";
-  elements.colorWheel.append(wheelMarkerHalo, wheelMarker);
 }
 
 function bindEvents() {
@@ -265,7 +245,7 @@ function render() {
   const baseHex = hslToHex(state.h, state.s, state.l);
   const baseCss = hslToCss(state.h, state.s, state.l);
   const scheme = schemeDefinitions[state.scheme];
-  const palette = scheme.build(state);
+  const schemeColors = scheme.colors(state);
 
   elements.heroSwatch.style.background = baseHex;
   elements.heroHex.textContent = baseHex;
@@ -284,9 +264,9 @@ function render() {
   document.documentElement.style.setProperty("--accent-soft", `${baseCss}33`);
 
   renderSchemeButtons();
-  renderWheel(palette);
+  renderWheel(schemeColors);
   renderToneBar();
-  renderPalette(palette);
+  renderPalette(schemeColors);
   renderTheory();
 }
 
@@ -296,28 +276,20 @@ function renderSchemeButtons() {
   });
 }
 
-function renderWheel(palette) {
+function renderWheel(schemeColors) {
   elements.colorWheel.querySelectorAll(".scheme-marker").forEach((marker) => marker.remove());
 
   const radius = elements.colorWheel.clientWidth / 2;
-  const markerRadius = radius * colorToWheelRatio(state);
-  const angleRad = (state.h * Math.PI) / 180;
-  const x = radius + Math.cos(angleRad) * markerRadius;
-  const y = radius + Math.sin(angleRad) * markerRadius;
 
-  wheelMarkerHalo.style.left = `${x}px`;
-  wheelMarkerHalo.style.top = `${y}px`;
-  wheelMarker.style.left = `${x}px`;
-  wheelMarker.style.top = `${y}px`;
-  wheelMarker.style.background = hslToHex(state.h, state.s, state.l);
-
-  palette.forEach((color, index) => {
-    if (index === 0 && color.h === state.h && color.s === state.s && color.l === state.l) {
-      return;
-    }
+  schemeColors.forEach((color) => {
     const marker = document.createElement("div");
     marker.className = "scheme-marker";
     marker.style.background = hslToHex(color.h, color.s, color.l);
+    marker.title = `${color.label} ${hslToHex(color.h, color.s, color.l)}`;
+    if (sameColor(color, state)) {
+      marker.style.transform = "scale(1.35)";
+      marker.style.boxShadow = "0 0 0 2px rgba(195, 226, 255, 0.28)";
+    }
 
     const ratio = colorToWheelRatio(color);
     const hueRad = (color.h * Math.PI) / 180;
@@ -326,6 +298,11 @@ function renderWheel(palette) {
 
     marker.style.left = `${markerX}px`;
     marker.style.top = `${markerY}px`;
+    marker.addEventListener("pointerdown", (event) => {
+      event.stopPropagation();
+      setStateFromColor(color);
+      render();
+    });
     elements.colorWheel.append(marker);
   });
 }
@@ -338,10 +315,10 @@ function renderToneBar() {
   elements.toneThumb.style.left = `${((state.l - 8) / 84) * 100}%`;
 }
 
-function renderPalette(palette) {
+function renderPalette(schemeColors) {
   elements.paletteGrid.innerHTML = "";
 
-  palette.forEach((color) => {
+  schemeColors.forEach((color) => {
     const colorHex = hslToHex(color.h, color.s, color.l);
     const fragment = elements.paletteCardTemplate.content.cloneNode(true);
     const button = fragment.querySelector(".palette-swatch-button");
@@ -357,6 +334,8 @@ function renderPalette(palette) {
     hsl.textContent = formatHsl(color.h, color.s, color.l);
 
     button.addEventListener("click", async () => {
+      setStateFromColor(color);
+      render();
       try {
         await navigator.clipboard.writeText(colorHex);
         copyLabel.textContent = "copied";
@@ -377,7 +356,7 @@ function renderTheory() {
   elements.theoryGrid.innerHTML = "";
 
   Object.values(schemeDefinitions).forEach((scheme) => {
-    const palette = scheme.build(demoBase);
+    const palette = scheme.colors(demoBase);
     const fragment = elements.theoryCardTemplate.content.cloneNode(true);
     const title = fragment.querySelector("h2");
     const copy = fragment.querySelector(".theory-copy");
@@ -414,6 +393,16 @@ function renderTheory() {
 function normalizeHex(value) {
   const prepared = value.trim().replace(/^#?/, "#");
   return /^#[0-9a-fA-F]{6}$/.test(prepared) ? prepared.toLowerCase() : null;
+}
+
+function setStateFromColor(color) {
+  state.h = normalizeHue(color.h);
+  state.s = Math.round(color.s);
+  state.l = Math.round(color.l);
+}
+
+function sameColor(a, b) {
+  return normalizeHue(a.h) === normalizeHue(b.h) && Math.round(a.s) === Math.round(b.s) && Math.round(a.l) === Math.round(b.l);
 }
 
 function clamp(value, min, max) {
