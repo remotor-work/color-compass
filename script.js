@@ -1,88 +1,87 @@
 const schemeDefinitions = {
   monochromatic: {
-    label: "Монохромная",
-    description: "Один и тот же оттенок с разной светлотой и насыщенностью. Хорошо подходит для спокойных, цельных палитр.",
+    label: "Mono",
+    description: "single hue",
     build(base) {
-      const variations = [
-        { s: Math.max(base.s - 18, 18), l: Math.max(base.l - 22, 12), label: "Глубокий тон" },
-        { s: Math.max(base.s - 8, 10), l: clamp(base.l - 10, 8, 92), label: "Тёмный акцент" },
-        { s: base.s, l: base.l, label: "Базовый цвет" },
-        { s: clamp(base.s - 12, 12, 100), l: clamp(base.l + 12, 8, 92), label: "Светлый тон" },
-        { s: clamp(base.s - 25, 10, 100), l: clamp(base.l + 24, 8, 96), label: "Воздушный оттенок" }
+      return [
+        { h: base.h, s: clamp(base.s - 30, 8, 100), l: 16, label: "Shadow" },
+        { h: base.h, s: clamp(base.s - 12, 8, 100), l: 32, label: "Low" },
+        { h: base.h, s: base.s, l: base.l, label: "Base" },
+        { h: base.h, s: clamp(base.s - 12, 8, 100), l: 70, label: "High" },
+        { h: base.h, s: clamp(base.s - 28, 8, 100), l: 88, label: "Glow" }
       ];
-      return variations.map((variation) => ({ h: base.h, ...variation }));
     }
   },
   analogous: {
-    label: "Аналоговая",
-    description: "Соседние оттенки на круге. Даёт мягкий переход и ощущение естественной гармонии.",
+    label: "Analog",
+    description: "side hues",
     build(base) {
       return [
-        { h: normalizeHue(base.h - 36), s: base.s, l: clamp(base.l - 6, 8, 92), label: "Левый сосед" },
-        { h: normalizeHue(base.h - 18), s: clamp(base.s + 6, 0, 100), l: base.l, label: "Ближний левый" },
-        { h: base.h, s: base.s, l: base.l, label: "Базовый цвет" },
-        { h: normalizeHue(base.h + 18), s: clamp(base.s + 6, 0, 100), l: base.l, label: "Ближний правый" },
-        { h: normalizeHue(base.h + 36), s: base.s, l: clamp(base.l + 4, 8, 92), label: "Правый сосед" }
+        { h: normalizeHue(base.h - 34), s: clamp(base.s + 4, 8, 100), l: clamp(base.l - 6, 8, 92), label: "Left" },
+        { h: normalizeHue(base.h - 16), s: base.s, l: clamp(base.l + 4, 8, 92), label: "Near L" },
+        { h: base.h, s: base.s, l: base.l, label: "Base" },
+        { h: normalizeHue(base.h + 16), s: base.s, l: clamp(base.l + 4, 8, 92), label: "Near R" },
+        { h: normalizeHue(base.h + 34), s: clamp(base.s + 4, 8, 100), l: clamp(base.l - 6, 8, 92), label: "Right" }
       ];
     }
   },
   complementary: {
-    label: "Комплементарная",
-    description: "Цвет и его противоположность на круге. Один из самых ярких контрастов для акцентов.",
+    label: "Comp",
+    description: "direct contrast",
     build(base) {
       return [
-        { h: base.h, s: clamp(base.s - 18, 0, 100), l: clamp(base.l + 18, 8, 92), label: "Мягкая подложка" },
-        { h: base.h, s: base.s, l: base.l, label: "Базовый цвет" },
-        { h: normalizeHue(base.h + 180), s: base.s, l: base.l, label: "Дополнительный цвет" },
-        { h: normalizeHue(base.h + 180), s: clamp(base.s - 12, 0, 100), l: clamp(base.l - 10, 8, 92), label: "Контрастный акцент" }
+        { h: base.h, s: clamp(base.s - 28, 8, 100), l: 18, label: "Base dark" },
+        { h: base.h, s: base.s, l: base.l, label: "Base" },
+        { h: normalizeHue(base.h + 180), s: base.s, l: base.l, label: "Oppose" },
+        { h: normalizeHue(base.h + 180), s: clamp(base.s - 22, 8, 100), l: 82, label: "Oppose light" }
       ];
     }
   },
   splitComplementary: {
-    label: "Разделённо-комплементарная",
-    description: "Базовый цвет плюс два соседа его противоположности. Контраст остаётся сильным, но становится мягче.",
+    label: "Split",
+    description: "soft contrast",
     build(base) {
       return [
-        { h: base.h, s: base.s, l: base.l, label: "Базовый цвет" },
-        { h: normalizeHue(base.h + 150), s: clamp(base.s - 4, 0, 100), l: clamp(base.l + 6, 8, 92), label: "Левый контраст" },
-        { h: normalizeHue(base.h + 210), s: clamp(base.s - 4, 0, 100), l: clamp(base.l + 6, 8, 92), label: "Правый контраст" },
-        { h: normalizeHue(base.h + 180), s: clamp(base.s - 28, 0, 100), l: clamp(base.l - 12, 8, 92), label: "Глубокий акцент" }
+        { h: base.h, s: base.s, l: base.l, label: "Base" },
+        { h: normalizeHue(base.h + 150), s: base.s, l: clamp(base.l - 4, 8, 92), label: "Split L" },
+        { h: normalizeHue(base.h + 210), s: base.s, l: clamp(base.l + 10, 8, 92), label: "Split R" },
+        { h: base.h, s: clamp(base.s - 24, 8, 100), l: 18, label: "Anchor" }
       ];
     }
   },
   triadic: {
-    label: "Триада",
-    description: "Три равномерно удалённых цвета. Схема динамичная и сбалансированная, если один цвет сделать главным.",
+    label: "Triad",
+    description: "3 corners",
     build(base) {
       return [
-        { h: base.h, s: base.s, l: base.l, label: "Базовый цвет" },
-        { h: normalizeHue(base.h + 120), s: clamp(base.s - 6, 0, 100), l: clamp(base.l + 3, 8, 92), label: "Второй угол" },
-        { h: normalizeHue(base.h + 240), s: clamp(base.s - 6, 0, 100), l: clamp(base.l + 3, 8, 92), label: "Третий угол" },
-        { h: base.h, s: clamp(base.s - 30, 0, 100), l: clamp(base.l + 22, 8, 95), label: "Нейтральная связка" }
+        { h: base.h, s: base.s, l: base.l, label: "Base" },
+        { h: normalizeHue(base.h + 120), s: clamp(base.s - 6, 8, 100), l: clamp(base.l + 4, 8, 92), label: "T2" },
+        { h: normalizeHue(base.h + 240), s: clamp(base.s - 6, 8, 100), l: clamp(base.l + 4, 8, 92), label: "T3" },
+        { h: base.h, s: clamp(base.s - 36, 8, 100), l: 86, label: "Mist" }
       ];
     }
   },
   square: {
-    label: "Квадрат",
-    description: "Четыре цвета через 90 градусов. Удобно, когда хочется насыщенной, но равномерной палитры.",
+    label: "Square",
+    description: "4 equal",
     build(base) {
       return [0, 90, 180, 270].map((offset, index) => ({
         h: normalizeHue(base.h + offset),
-        s: index === 0 ? base.s : clamp(base.s - 6, 0, 100),
-        l: index === 0 ? base.l : clamp(base.l + (index % 2 === 0 ? -4 : 6), 8, 92),
-        label: ["Базовый цвет", "Второй угол", "Третий угол", "Четвёртый угол"][index]
+        s: index === 0 ? base.s : clamp(base.s - 8, 8, 100),
+        l: [base.l, 72, 28, 84][index],
+        label: ["Base", "Q2", "Q3", "Q4"][index]
       }));
     }
   },
   tetradic: {
-    label: "Тетрада",
-    description: "Две комплементарные пары. Даёт богатую палитру, особенно если держать один цвет ведущим, а остальные вспомогательными.",
+    label: "Tetra",
+    description: "2 pairs",
     build(base) {
       return [
-        { h: base.h, s: base.s, l: base.l, label: "Базовый цвет" },
-        { h: normalizeHue(base.h + 60), s: clamp(base.s - 4, 0, 100), l: clamp(base.l + 8, 8, 92), label: "Соседняя опора" },
-        { h: normalizeHue(base.h + 180), s: base.s, l: clamp(base.l - 6, 8, 92), label: "Прямой контраст" },
-        { h: normalizeHue(base.h + 240), s: clamp(base.s - 8, 0, 100), l: clamp(base.l + 10, 8, 92), label: "Вторая опора" }
+        { h: base.h, s: base.s, l: base.l, label: "Base" },
+        { h: normalizeHue(base.h + 60), s: clamp(base.s - 8, 8, 100), l: 76, label: "Pair A" },
+        { h: normalizeHue(base.h + 180), s: base.s, l: 26, label: "Oppose" },
+        { h: normalizeHue(base.h + 240), s: clamp(base.s - 8, 8, 100), l: 84, label: "Pair B" }
       ];
     }
   }
@@ -100,46 +99,60 @@ const elements = {
   hueValue: document.getElementById("hueValue"),
   saturationValue: document.getElementById("saturationValue"),
   lightnessValue: document.getElementById("lightnessValue"),
-  schemeSelect: document.getElementById("schemeSelect"),
+  schemeStrip: document.getElementById("schemeStrip"),
   schemeTitle: document.getElementById("schemeTitle"),
   schemeDescription: document.getElementById("schemeDescription"),
   colorWheel: document.getElementById("colorWheel"),
+  toneBar: document.getElementById("toneBar"),
+  toneThumb: document.getElementById("toneThumb"),
   paletteGrid: document.getElementById("paletteGrid"),
   paletteCardTemplate: document.getElementById("paletteCardTemplate")
 };
 
 const state = {
   h: 0,
-  s: 80,
-  l: 67,
+  s: 82,
+  l: 58,
   scheme: "monochromatic"
 };
+
+let wheelMarkerHalo;
+let wheelMarker;
 
 initialize();
 
 function initialize() {
-  populateSchemeSelect();
+  buildSchemeButtons();
+  buildWheelControls();
   bindEvents();
   syncStateFromHex("#ff6b6b");
   render();
 }
 
-function populateSchemeSelect() {
+function buildSchemeButtons() {
   Object.entries(schemeDefinitions).forEach(([key, scheme]) => {
-    const option = document.createElement("option");
-    option.value = key;
-    option.textContent = scheme.label;
-    elements.schemeSelect.append(option);
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "scheme-button";
+    button.textContent = scheme.label;
+    button.dataset.scheme = key;
+    button.addEventListener("click", () => {
+      state.scheme = key;
+      render();
+    });
+    elements.schemeStrip.append(button);
   });
-  elements.schemeSelect.value = state.scheme;
+}
+
+function buildWheelControls() {
+  wheelMarkerHalo = document.createElement("div");
+  wheelMarkerHalo.className = "wheel-marker-halo";
+  wheelMarker = document.createElement("div");
+  wheelMarker.className = "wheel-marker";
+  elements.colorWheel.append(wheelMarkerHalo, wheelMarker);
 }
 
 function bindEvents() {
-  elements.schemeSelect.addEventListener("change", () => {
-    state.scheme = elements.schemeSelect.value;
-    render();
-  });
-
   elements.nativeColorInput.addEventListener("input", (event) => {
     syncStateFromHex(event.target.value);
     render();
@@ -169,6 +182,67 @@ function bindEvents() {
     state.l = Number(elements.lightnessSlider.value);
     render();
   });
+
+  bindPointerDrag(elements.colorWheel, updateFromWheelPointer);
+  bindPointerDrag(elements.toneBar, updateFromTonePointer);
+}
+
+function bindPointerDrag(element, handler) {
+  let isDragging = false;
+
+  element.addEventListener("pointerdown", (event) => {
+    isDragging = true;
+    element.setPointerCapture(event.pointerId);
+    handler(event);
+  });
+
+  element.addEventListener("pointermove", (event) => {
+    if (isDragging) {
+      handler(event);
+    }
+  });
+
+  const release = (event) => {
+    if (isDragging) {
+      isDragging = false;
+      try {
+        element.releasePointerCapture(event.pointerId);
+      } catch {
+        // Ignore browsers that already released capture.
+      }
+    }
+  };
+
+  element.addEventListener("pointerup", release);
+  element.addEventListener("pointercancel", release);
+  element.addEventListener("pointerleave", (event) => {
+    if (event.pointerType === "mouse") {
+      release(event);
+    }
+  });
+}
+
+function updateFromWheelPointer(event) {
+  const rect = elements.colorWheel.getBoundingClientRect();
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+  const dx = event.clientX - centerX;
+  const dy = event.clientY - centerY;
+  const distance = Math.min(Math.hypot(dx, dy), rect.width / 2);
+  const ratio = clamp(distance / (rect.width / 2), 0, 1);
+  const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+
+  state.h = normalizeHue(angle);
+  state.s = Math.round(12 + ratio * 88);
+  state.l = Math.round(92 - ratio * 40);
+  render();
+}
+
+function updateFromTonePointer(event) {
+  const rect = elements.toneBar.getBoundingClientRect();
+  const ratio = clamp((event.clientX - rect.left) / rect.width, 0, 1);
+  state.l = Math.round(8 + ratio * 84);
+  render();
 }
 
 function syncStateFromHex(hex) {
@@ -180,13 +254,13 @@ function syncStateFromHex(hex) {
 
 function render() {
   const baseHex = hslToHex(state.h, state.s, state.l);
-  const baseHsl = formatHsl(state.h, state.s, state.l);
+  const baseCss = hslToCss(state.h, state.s, state.l);
   const scheme = schemeDefinitions[state.scheme];
   const palette = scheme.build(state);
 
   elements.heroSwatch.style.background = baseHex;
   elements.heroHex.textContent = baseHex;
-  elements.heroHsl.textContent = baseHsl;
+  elements.heroHsl.textContent = formatHsl(state.h, state.s, state.l);
   elements.hexInput.value = baseHex;
   elements.nativeColorInput.value = baseHex;
   elements.hueSlider.value = String(state.h);
@@ -195,26 +269,63 @@ function render() {
   elements.hueValue.textContent = `${state.h}°`;
   elements.saturationValue.textContent = `${state.s}%`;
   elements.lightnessValue.textContent = `${state.l}%`;
-  elements.schemeTitle.textContent = `${scheme.label} схема`;
+  elements.schemeTitle.textContent = scheme.label;
   elements.schemeDescription.textContent = scheme.description;
   document.documentElement.style.setProperty("--accent", baseHex);
+  document.documentElement.style.setProperty("--accent-soft", `${baseCss}33`);
 
+  renderSchemeButtons();
   renderWheel(palette);
+  renderToneBar();
   renderPalette(palette);
 }
 
+function renderSchemeButtons() {
+  elements.schemeStrip.querySelectorAll(".scheme-button").forEach((button) => {
+    button.classList.toggle("active", button.dataset.scheme === state.scheme);
+  });
+}
+
 function renderWheel(palette) {
-  const currentMarkers = elements.colorWheel.querySelectorAll(".wheel-marker");
-  currentMarkers.forEach((marker) => marker.remove());
+  elements.colorWheel.querySelectorAll(".scheme-marker").forEach((marker) => marker.remove());
+
+  const radius = elements.colorWheel.clientWidth / 2;
+  const markerRadius = radius * (state.s / 100);
+  const angleRad = (state.h * Math.PI) / 180;
+  const x = radius + Math.cos(angleRad) * markerRadius;
+  const y = radius + Math.sin(angleRad) * markerRadius;
+
+  wheelMarkerHalo.style.left = `${x}px`;
+  wheelMarkerHalo.style.top = `${y}px`;
+  wheelMarker.style.left = `${x}px`;
+  wheelMarker.style.top = `${y}px`;
+  wheelMarker.style.background = hslToHex(state.h, state.s, state.l);
 
   palette.forEach((color, index) => {
+    if (index === 0 && color.h === state.h && color.s === state.s && color.l === state.l) {
+      return;
+    }
     const marker = document.createElement("div");
-    marker.className = `wheel-marker${index === 0 ? " base" : ""}`;
-    marker.style.setProperty("--angle", String(color.h));
-    marker.style.setProperty("--distance", "182");
-    marker.style.setProperty("--marker-color", hslToCss(color.h, color.s, color.l));
+    marker.className = "scheme-marker";
+    marker.style.background = hslToHex(color.h, color.s, color.l);
+
+    const ratio = clamp(color.s / 100, 0.16, 1);
+    const hueRad = (color.h * Math.PI) / 180;
+    const markerX = radius + Math.cos(hueRad) * radius * ratio;
+    const markerY = radius + Math.sin(hueRad) * radius * ratio;
+
+    marker.style.left = `${markerX}px`;
+    marker.style.top = `${markerY}px`;
     elements.colorWheel.append(marker);
   });
+}
+
+function renderToneBar() {
+  const dark = hslToHex(state.h, Math.max(state.s - 18, 0), 8);
+  const base = hslToHex(state.h, state.s, state.l);
+  const light = hslToHex(state.h, Math.max(state.s - 18, 0), 92);
+  elements.toneBar.style.background = `linear-gradient(90deg, ${dark} 0%, ${base} 50%, ${light} 100%)`;
+  elements.toneThumb.style.left = `${((state.l - 8) / 84) * 100}%`;
 }
 
 function renderPalette(palette) {
@@ -223,25 +334,27 @@ function renderPalette(palette) {
   palette.forEach((color) => {
     const colorHex = hslToHex(color.h, color.s, color.l);
     const fragment = elements.paletteCardTemplate.content.cloneNode(true);
+    const button = fragment.querySelector(".palette-swatch-button");
     const swatch = fragment.querySelector(".palette-swatch");
-    const title = fragment.querySelector("h3");
+    const title = fragment.querySelector("h2");
     const hex = fragment.querySelector(".palette-hex");
     const hsl = fragment.querySelector(".palette-hsl");
-    const button = fragment.querySelector(".copy-button");
+    const copyLabel = fragment.querySelector(".palette-copy");
 
     swatch.style.background = colorHex;
     title.textContent = color.label;
     hex.textContent = colorHex;
     hsl.textContent = formatHsl(color.h, color.s, color.l);
+
     button.addEventListener("click", async () => {
       try {
         await navigator.clipboard.writeText(colorHex);
-        button.textContent = "Скопировано";
+        copyLabel.textContent = "copied";
         setTimeout(() => {
-          button.textContent = "Скопировать";
-        }, 1200);
+          copyLabel.textContent = "copy";
+        }, 1000);
       } catch {
-        button.textContent = "Не удалось";
+        copyLabel.textContent = "fail";
       }
     });
 
