@@ -300,7 +300,7 @@ function renderWheel(palette) {
   elements.colorWheel.querySelectorAll(".scheme-marker").forEach((marker) => marker.remove());
 
   const radius = elements.colorWheel.clientWidth / 2;
-  const markerRadius = radius * (state.s / 100);
+  const markerRadius = radius * colorToWheelRatio(state);
   const angleRad = (state.h * Math.PI) / 180;
   const x = radius + Math.cos(angleRad) * markerRadius;
   const y = radius + Math.sin(angleRad) * markerRadius;
@@ -319,7 +319,7 @@ function renderWheel(palette) {
     marker.className = "scheme-marker";
     marker.style.background = hslToHex(color.h, color.s, color.l);
 
-    const ratio = clamp(color.s / 100, 0.16, 1);
+    const ratio = colorToWheelRatio(color);
     const hueRad = (color.h * Math.PI) / 180;
     const markerX = radius + Math.cos(hueRad) * radius * ratio;
     const markerY = radius + Math.sin(hueRad) * radius * ratio;
@@ -394,7 +394,7 @@ function renderTheory() {
 
       const hueRad = (color.h * Math.PI) / 180;
       const radius = 39;
-      const ratio = clamp(color.s / 100, 0.2, 1) * 0.84;
+      const ratio = colorToWheelRatio(color) * 0.84;
       const x = radius + Math.cos(hueRad) * radius * ratio;
       const y = radius + Math.sin(hueRad) * radius * ratio;
       dot.style.left = `${x}px`;
@@ -418,6 +418,13 @@ function normalizeHex(value) {
 
 function clamp(value, min, max) {
   return Math.min(Math.max(value, min), max);
+}
+
+function colorToWheelRatio(color) {
+  const saturationRatio = clamp((color.s - 12) / 88, 0, 1);
+  const lightnessRatio = clamp((92 - color.l) / 40, 0, 1);
+  const blendedRatio = saturationRatio * 0.58 + lightnessRatio * 0.42;
+  return clamp(blendedRatio, 0.16, 1);
 }
 
 function normalizeHue(hue) {
